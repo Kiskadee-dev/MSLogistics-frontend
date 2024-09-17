@@ -153,7 +153,8 @@ export async function deleteMercadoria(
   }
 }
 
-interface IOperacao {
+export interface IOperacao {
+  id: number;
   mercadoria: number;
   quantia: number;
   tipo: number;
@@ -162,6 +163,49 @@ interface IOperacao {
 }
 export function fetchOperacoes(): Promise<IOperacao[]> {
   return fetch("http://localhost:5000/operacao/").then((response) => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  });
+}
+
+interface ICOperacao {
+  mercadoria: number;
+  quantia: number;
+  tipo: number;
+  data_e_hora: string;
+  local: string;
+}
+export async function createOperacao(
+  novaOperacao: ICOperacao
+): Promise<boolean> {
+  const formData = new FormData();
+  formData.append("mercadoria", novaOperacao.mercadoria.toString());
+  formData.append("quantia", novaOperacao.quantia.toString());
+  formData.append("tipo_operacao", novaOperacao.tipo.toString());
+  formData.append("data_e_hora", novaOperacao.data_e_hora.toString());
+  formData.append("local", novaOperacao.local.toString());
+  try {
+    const response = await fetch("http://localhost:5000/operacao", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to create operação: ", error);
+    throw error;
+  }
+}
+
+interface ITiposOperacoes {
+  id: number;
+  nome: string;
+}
+export function fetchTiposOperacao(): Promise<ITiposOperacoes[]> {
+  return fetch("http://localhost:5000/operacao/tipos/").then((response) => {
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();
   });

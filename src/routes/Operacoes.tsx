@@ -5,17 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "../components/Spinner/Spinner";
 import ErrorLoading from "../components/ErrorLoading/ErrorLoading";
 import { Link } from "react-router-dom";
+import Operacao from "../components/Operacao/Operacao";
 
 type Props = {};
 
 const Operacoes = (props: Props) => {
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["mercadorias"],
+    queryKey: ["operacoes"],
     queryFn: fetchOperacoes,
   });
 
   if (isLoading) return <Spinner />;
-  if (isError) return <ErrorLoading />;
+  if (isError) return <ErrorLoading error={error.message} />;
 
   return (
     <div className="flex flex-col">
@@ -25,7 +26,12 @@ const Operacoes = (props: Props) => {
           <Button onClick={() => {}}>Criar nova operação</Button>
         </Link>
       </div>
-      {data?.map((op) => (<div>...</div>))}
+      
+      <div className="mt-2">
+        {data?.map((op) => (
+          <Operacao key={op.id} operacao={op} />
+        ))}
+      </div>
     </div>
   );
 };

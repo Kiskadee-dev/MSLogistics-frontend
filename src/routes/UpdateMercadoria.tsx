@@ -94,84 +94,8 @@ const UpdateMercadoria = (props: Props) => {
 
   return (
     <div>
-      Editando Mercadoria: {Id}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="container flex flex-col">
-          <input
-            className={`${formCss} mt-2`}
-            placeholder={data.nome}
-            {...register("nome", { required: true })}
-          />
-          {errors.nome && <ErrorMessage>Este campo é necessário</ErrorMessage>}
+      <h1>Mercadoria: {Id}</h1>
 
-          <input
-            placeholder={data.numero_registro}
-            type="number"
-            className={`${formCss} mt-2`}
-            {...register("numeroRegistro", { required: true })}
-          />
-
-          {errors.numeroRegistro && (
-            <ErrorMessage>Este campo é necessário</ErrorMessage>
-          )}
-
-          <select
-            className={`${formCss} mt-2`}
-            {...register("fabricante", { required: true })}
-          >
-            <option value={data.fabricante.id}>{data.fabricante.nome}</option>
-            {fabricantes.data?.map((fab) => (
-              <option key={fab.id} value={fab.id}>
-                {fab.nome}
-              </option>
-            ))}
-          </select>
-          {errors.fabricante && (
-            <ErrorMessage>Este campo é necessário</ErrorMessage>
-          )}
-
-          <select
-            className={`${formCss} mt-2`}
-            {...register("tipo", { required: true })}
-          >
-            <option value={data.tipo.id}>{data.tipo.nome}</option>
-            {tipos.data?.map((tip) => (
-              <option key={tip.id} value={tip.id}>
-                {tip.nome}
-              </option>
-            ))}
-          </select>
-          {errors.tipo && <ErrorMessage>Este campo é necessário</ErrorMessage>}
-
-          <input
-            placeholder={data.descricao}
-            type="text"
-            className={`${formCss} mt-2 min-h-40`}
-            {...register("descricao", { required: true })}
-          />
-          {errors.descricao && (
-            <ErrorMessage>Este campo é necessário</ErrorMessage>
-          )}
-
-          <div className="flex flex-row">
-            <Button
-              className="min-w-20 max-w-36 mt-4"
-              onClick={() => {}}
-              type="submit"
-            >
-              Atualizar mercadoria
-            </Button>
-            <Button
-              className="min-w-20 max-w-36 mt-4 ml-2 bg-red-600 hover:bg-red-700"
-              onClick={() => {
-                mutationDelete.mutate({ id: Id });
-              }}
-            >
-              Deletar mercadoria
-            </Button>
-          </div>
-        </div>
-      </form>
     </div>
   );
 };
