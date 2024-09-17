@@ -9,8 +9,8 @@ const Operacao = ({ operacao }: Props) => {
   const navigate = useNavigate();
   return (
     <div
-      role="button"
-      onClick={() => navigate(`${operacao.id}`)}
+      //   role="button"
+      //   onClick={() => navigate(`${operacao.id}`)}
       className="bg-gray-100 border border-gray-300 rounded-lg p-4 shadow-sm mb-4 transition-colors delay-75 hover:border-cyan-600"
     >
       <p className="text-gray-800 font-semibold">Quantia:</p>

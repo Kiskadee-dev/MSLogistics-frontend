@@ -20,13 +20,13 @@ const Operacoes = (props: Props) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row justify-evenly">
+      <div className="flex flex-row justify-evenly items-center">
         <h1>Operações:</h1>
         <Link to={"nova"}>
           <Button onClick={() => {}}>Criar nova operação</Button>
         </Link>
       </div>
-      
+
       <div className="mt-2">
         {data?.map((op) => (
           <Operacao key={op.id} operacao={op} />

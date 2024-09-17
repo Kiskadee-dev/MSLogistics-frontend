@@ -38,7 +38,7 @@ const CadastroOperacao = (props: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mercadorias"] });
       alert("Sucesso!");
-      navigate("/operacao/");
+      navigate("/operacoes/");
     },
     onError: () => {
       alert("Some error occurred!");
