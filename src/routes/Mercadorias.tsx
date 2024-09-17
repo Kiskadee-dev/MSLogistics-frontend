@@ -1,6 +1,11 @@
 import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMercadorias } from "../services/api";
+import Mercadoria from "../components/Mercadoria/Mercadoria";
+import Spinner from "../components/Spinner/Spinner";
+import ErrorMessage from "../components/ErrorLoading/ErrorLoading";
+import Button from "../components/Button";
+import { Link } from "react-router-dom";
 type Props = {};
 
 const Mercadorias = (props: Props) => {
@@ -10,27 +15,23 @@ const Mercadorias = (props: Props) => {
     queryFn: fetchMercadorias,
   });
 
-  if (isLoading) return <span>Loading...</span>;
-  if (isError) return <span>Error: {error.message}</span>;
+  if (isLoading) return <Spinner />;
+  if (isError) return <ErrorMessage error={error.message} />;
 
   return (
     <>
-      <div className="container flex justify-evenly">
+      <div className="container flex justify-evenly items-center pb-2">
         <div>Mercadorias cadastradas: {data?.length}</div>
-        <button className="bg-gray-600 rounded-sm text-white p-2">
-          Cadastrar nova mercadoria
-        </button>
+        <Link to="/nova/mercadoria"><Button onClick={() => {}} text="Cadastrar mercadoria" /></Link>
       </div>
 
-      <ul>
+      <div className="container flex min-h-screen bg-gray-200 p-6 rounded-md">
         {data?.map((mercadoria) => (
-          <li key={mercadoria.id} className="bg-white">
-            <p>Nome: {mercadoria.nome}</p>
-            <p>Descrição: {mercadoria.descricao}</p>
-            <p>Número de registro: {mercadoria.numero_registro}</p>
-          </li>
+          <div key={mercadoria.id}>
+            <Mercadoria mercadoria={mercadoria} />
+          </div>
         ))}
-      </ul>
+      </div>
     </>
   );
 };

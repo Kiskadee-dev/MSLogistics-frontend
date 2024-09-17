@@ -14,6 +14,7 @@ import "./index.css";
 import { Header } from "components/header";
 import ErrorPage from "./routes/ErrorPage.tsx";
 import Mercadorias from "./routes/Mercadorias.tsx";
+import CadastroMercadoria from "./routes/CadastroMercadoria.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "mercadoria/",
         element: <Mercadorias />,
+      },
+      {
+        path: "nova/mercadoria",
+        element: <CadastroMercadoria />,
       },
     ],
   },
