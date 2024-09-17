@@ -1,18 +1,26 @@
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import Button from "../components/Button";
-import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import {
-  createMercadoria,
+  deleteMercadoria,
   fetchFabricantes,
+  fetchMercadoria,
   fetchTiposMercadoria,
+  updateMercadoria,
 } from "../services/api";
 import Spinner from "../components/Spinner/Spinner";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import ErrorLoading from "../components/ErrorLoading/ErrorLoading";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
 import formCss from "../components/Forms/Input";
+import { useForm } from "react-hook-form";
+import Button from "../components/Button";
 
+interface Props {}
 interface IInputs {
   nome: string;
   fabricante: number;
@@ -20,15 +28,39 @@ interface IInputs {
   tipo: number;
   numeroRegistro: number;
 }
-type Props = {};
-
-const CadastroMercadoria = (props: Props) => {
+const UpdateMercadoria = (props: Props) => {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<IInputs>();
+
+  const { Id } = useParams<{ Id: string }>();
+
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["mercadoria"],
+    queryFn: () => fetchMercadoria(Id),
+  });
+
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: updateMercadoria,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mercadorias"] });
+      alert("Sucesso!");
+      navigate("/mercadoria/");
+    },
+  });
+
+  const mutationDelete = useMutation({
+    mutationFn: deleteMercadoria,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mercadorias"] });
+      alert("Sucesso!");
+      navigate("/mercadoria/");
+    },
+  });
 
   const queryClient = useQueryClient();
   const results = useQueries({
@@ -43,18 +75,16 @@ const CadastroMercadoria = (props: Props) => {
       },
     ],
   });
+  const [fabricantes, tipos] = results;
 
-  const navigate = useNavigate();
-  const mutation = useMutation({
-    mutationFn: createMercadoria,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["mercadorias"] });
-      alert("Sucesso!");
-      navigate("/mercadoria/");
-    },
-  });
+  if (fabricantes.isLoading || tipos.isLoading) return <Spinner />;
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <ErrorLoading error={error.message} />;
+
   const onSubmit: SubmitHandler<IInputs> = (data) =>
     mutation.mutate({
+      id: Id,
       nome: data.nome,
       descricao: data.descricao,
       fabricante: data.fabricante,
@@ -62,24 +92,20 @@ const CadastroMercadoria = (props: Props) => {
       tipo: data.tipo,
     });
 
-  const [fabricantes, tipos] = results;
-
-  if (fabricantes.isLoading || tipos.isLoading) return <Spinner />;
-
   return (
     <div>
-      <h1>Cadastro de Mercadoria</h1>
+      Editando Mercadoria: {Id}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="container flex flex-col">
           <input
             className={`${formCss} mt-2`}
-            placeholder="Nome da mercadoria"
+            placeholder={data.nome}
             {...register("nome", { required: true })}
           />
           {errors.nome && <ErrorMessage>Este campo é necessário</ErrorMessage>}
 
           <input
-            placeholder="Número de registro"
+            placeholder={data.numero_registro}
             type="number"
             className={`${formCss} mt-2`}
             {...register("numeroRegistro", { required: true })}
@@ -93,7 +119,7 @@ const CadastroMercadoria = (props: Props) => {
             className={`${formCss} mt-2`}
             {...register("fabricante", { required: true })}
           >
-            <option value="">Selecione o fabricante</option>
+            <option value={data.fabricante.id}>{data.fabricante.nome}</option>
             {fabricantes.data?.map((fab) => (
               <option key={fab.id} value={fab.id}>
                 {fab.nome}
@@ -108,7 +134,7 @@ const CadastroMercadoria = (props: Props) => {
             className={`${formCss} mt-2`}
             {...register("tipo", { required: true })}
           >
-            <option value="">Selecione o tipo</option>
+            <option value={data.tipo.id}>{data.tipo.nome}</option>
             {tipos.data?.map((tip) => (
               <option key={tip.id} value={tip.id}>
                 {tip.nome}
@@ -118,7 +144,7 @@ const CadastroMercadoria = (props: Props) => {
           {errors.tipo && <ErrorMessage>Este campo é necessário</ErrorMessage>}
 
           <input
-            placeholder="Insira a descrição da mercadoria"
+            placeholder={data.descricao}
             type="text"
             className={`${formCss} mt-2 min-h-40`}
             {...register("descricao", { required: true })}
@@ -126,17 +152,28 @@ const CadastroMercadoria = (props: Props) => {
           {errors.descricao && (
             <ErrorMessage>Este campo é necessário</ErrorMessage>
           )}
-          <Button
-            className="min-w-20 max-w-36 mt-4"
-            onClick={() => {}}
-            type="submit"
-          >
-            Criar mercadoria
-          </Button>
+
+          <div className="flex flex-row">
+            <Button
+              className="min-w-20 max-w-36 mt-4"
+              onClick={() => {}}
+              type="submit"
+            >
+              Atualizar mercadoria
+            </Button>
+            <Button
+              className="min-w-20 max-w-36 mt-4 ml-2 bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                mutationDelete.mutate({ id: Id });
+              }}
+            >
+              Deletar mercadoria
+            </Button>
+          </div>
         </div>
       </form>
     </div>
   );
 };
 
-export default CadastroMercadoria;
+export default UpdateMercadoria;

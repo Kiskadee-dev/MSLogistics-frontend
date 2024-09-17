@@ -1,13 +1,14 @@
 import React from "react";
 import { IMercadoria } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   mercadoria: IMercadoria;
 }
-
 const Mercadoria = ({ mercadoria }: Props) => {
+  const navigate = useNavigate();
   return (
-    <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 shadow-sm mb-4">
+    <div role="button" onClick={() => navigate(`${mercadoria.id}`)} className="bg-gray-100 border border-gray-300 rounded-lg p-4 shadow-sm mb-4 transition-colors delay-75 hover:border-cyan-600">
       <p className="text-gray-800 font-semibold">Nome:</p>
       <p className="text-gray-600 mb-2">{mercadoria.nome}</p>
       <p className="text-gray-800 font-semibold">Fabricante:</p>
@@ -18,6 +19,8 @@ const Mercadoria = ({ mercadoria }: Props) => {
       <p className="text-gray-600 mb-2">{mercadoria.tipo.nome}</p>
       <p className="text-gray-800 font-semibold">Número de registro:</p>
       <p className="text-gray-600">{mercadoria.numero_registro}</p>
+      <p className="text-gray-800 font-semibold">Data de criação:</p>
+      <p className="text-gray-600">{mercadoria.criado_em}</p>
     </div>
   );
 };

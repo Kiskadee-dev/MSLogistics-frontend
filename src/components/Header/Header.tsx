@@ -19,27 +19,27 @@ const Header = (props: Props) => {
               </Link>
             </li>
             <li>
-              <a
+              <Link to={'operacoes/'}
                 href="#"
                 className="text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Operações
+              </Link>
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/matheusvictori/"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Sobre
               </a>
             </li>
             <li>
               <a
-                href="#"
+                href="https://github.com/Kiskadee-dev"
                 className="text-gray-700 hover:text-blue-600 transition-colors"
               >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-700 hover:text-blue-600 transition-colors"
-              >
-                Contact
+                Contato
               </a>
             </li>
           </ul>

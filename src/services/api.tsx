@@ -23,16 +23,145 @@ export interface IFabricante {
 export interface IMercadoria {
   id: number;
   nome: string;
-  numero_registro: string;
+  numero_registro: number;
   descricao: string;
   tipo: ITipo;
-  fabricante: IFabricante;
+  fabricante: IFabricante | number;
   criado_por: ICriadoPor;
   criado_em: string;
 }
 
 export function fetchMercadorias(): Promise<IMercadoria[]> {
   return fetch("http://localhost:5000/mercadoria/").then((response) => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  });
+}
+
+export function fetchMercadoria(Id: number): Promise<IMercadoria[]> {
+  return fetch(`http://localhost:5000/mercadoria/${Id}`).then((response) => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  });
+}
+export function fetchFabricantes(): Promise<IFabricante[]> {
+  return fetch("http://localhost:5000/fabricante/").then((response) => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  });
+}
+
+export function fetchTiposMercadoria(): Promise<ITipo[]> {
+  return fetch("http://localhost:5000/mercadoria/tipos/").then((response) => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  });
+}
+
+interface IPMercadoria {
+  nome: string;
+  numero_registro: number;
+  descricao: string;
+  tipo: number;
+  fabricante: number;
+}
+
+export async function createMercadoria(
+  novaMercadoria: IPMercadoria
+): Promise<boolean> {
+  const formData = new FormData();
+  formData.append("nome", novaMercadoria.nome);
+  formData.append("numero_registro", novaMercadoria.numero_registro.toString());
+  formData.append("descricao", novaMercadoria.descricao);
+  formData.append("tipo", novaMercadoria.tipo.toString());
+  formData.append("fabricante", novaMercadoria.fabricante.toString());
+  try {
+    const response = await fetch("http://localhost:5000/mercadoria", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to create mercadoria: ", error);
+    throw error;
+  }
+}
+
+interface IUMercadoria {
+  id: number;
+  nome: string;
+  numero_registro: number;
+  descricao: string;
+  tipo: number;
+  fabricante: number;
+}
+
+export async function updateMercadoria(
+  patchMercadoria: IUMercadoria
+): Promise<boolean> {
+  const formData = new FormData();
+  formData.append("id", patchMercadoria.id.toString());
+  formData.append("nome", patchMercadoria.nome);
+  formData.append(
+    "numero_registro",
+    patchMercadoria.numero_registro.toString()
+  );
+  formData.append("descricao", patchMercadoria.descricao);
+  formData.append("tipo", patchMercadoria.tipo.toString());
+  formData.append("fabricante", patchMercadoria.fabricante.toString());
+  try {
+    const response = await fetch(
+      `http://localhost:5000/mercadoria/${patchMercadoria.id}`,
+      {
+        method: "PATCH",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to patch mercadoria: ", error);
+    throw error;
+  }
+}
+
+interface IDeleteMercadoria {
+  id: number;
+}
+export async function deleteMercadoria(
+  del: IDeleteMercadoria
+): Promise<boolean> {
+  try {
+    const response = await fetch(`http://localhost:5000/mercadoria/${del.id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to patch mercadoria: ", error);
+    throw error;
+  }
+}
+
+interface IOperacao {
+  mercadoria: number;
+  quantia: number;
+  tipo: number;
+  data_e_hora: string;
+  local: string;
+}
+export function fetchOperacoes(): Promise<IOperacao[]> {
+  return fetch("http://localhost:5000/operacao/").then((response) => {
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();
   });
