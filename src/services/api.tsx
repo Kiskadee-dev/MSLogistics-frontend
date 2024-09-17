@@ -210,3 +210,22 @@ export function fetchTiposOperacao(): Promise<ITiposOperacoes[]> {
     return response.json();
   });
 }
+
+interface IDeleteOperacao {
+  id: number;
+}
+export async function deleteOperacao(del: IDeleteOperacao): Promise<boolean> {
+  try {
+    const response = await fetch(`http://localhost:5000/operacao/${del.id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to patch mercadoria: ", error);
+    throw error;
+  }
+}
